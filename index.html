@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cimbom Hub - Galatasaray Özel</title>
+    <style>
+        /* Sarı Kırmızı Genel Tema */
+        :root {
+            --galatasaray-kirmizi: #A90432;
+            --galatasaray-sari: #FDB912;
+            --koyu-arka-plan: #121212;
+            --kart-bg: #1c1c1c;
+            --yazi-renk: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--koyu-arka-plan);
+            color: var(--yazi-renk);
+            overflow-x: hidden;
+        }
+
+        /* Üst Menü Paneli (Header) */
+        header {
+            background-color: var(--galatasaray-kirmizi);
+            border-bottom: 4px solid var(--galatasaray-sari);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Sol Üst 3 Çizgi Menü Butonu */
+        .menu-btn {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            margin-right: 20px;
+        }
+
+        .menu-btn span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--galatasaray-sari);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--galatasaray-sari);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Açılır Yan Menü (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -270px;
+            width: 270px;
+            height: 100%;
+            background-color: var(--kart-bg);
+            border-right: 3px solid var(--galatasaray-sari);
+            transition: 0.3s all ease;
+            padding-top: 80px;
+            z-index: 99;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 25px;
+            color: var(--yazi-renk);
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid #2a2a2a;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--galatasaray-kirmizi);
+            color: var(--galatasaray-sari);
+        }
+
+        /* Ana İçerik Alanı */
+        .container {
+            margin-top: 90px;
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Yeni Sezon Sayaç Alanı */
+        .countdown-box {
+            background: linear-gradient(135deg, var(--galatasaray-kirmizi), #60021b);
+            border: 2px solid var(--galatasaray-sari);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .countdown-box h2 {
+            color: var(--galatasaray-sari);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Kart Yapısı (Haberler ve Söylentiler) */
+        .section-title {
+            color: var(--galatasaray-sari);
+            border-left: 5px solid var(--galatasaray-kirmizi);
+            padding-left: 10px;
+            margin: 25px 0 15px 0;
+            font-size: 22px;
+        }
+
+        .news-card {
+            background-color: var(--kart-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--galatasaray-sari);
+        }
+
+        .news-card.signature {
+            border-left: 4px solid #28a745; /* Resmi imzalar için yeşil detay */
+        }
+
+        .news-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .news-card p {
+            font-size: 14px;
+            color: #b3b3b3;
+            line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .tag-rumor { background-color: #ffc107; color: #000; }
+        .tag-official { background-color: #28a745; color: #fff; }
+        .tag-news { background-color: var(--galatasaray-kirmizi); color: #fff; }
+
+        /* Lig Sıralaması Tablosu */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--kart-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--galatasaray-kirmizi);
+            color: var(--galatasaray-sari);
+            font-weight: bold;
+        }
+
+        tr {
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        tr.gs-row {
+            background-color: rgba(253, 185, 18, 0.15);
+            font-weight: bold;
+        }
+
+        /* Tarihçe Alanı */
+        .history-box {
+            background-color: var(--kart-bg);
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.6;
+            border-top: 3px solid var(--galatasaray-kirmizi);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Üst Menü Çubuğu -->
+    <header>
+        <div class="menu-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="logo-text">Aslan Hub 🦁</div>
+    </header>
+
+    <!-- Yan Menü (Sıralama İsteklerine Göre Düzenlendi) -->
+    <div class="sidebar" id="sidebar">
+        <a href="#" onclick="alert('Transfer Odasına Hoş Geldin! Yakında burası anlık bildirimlerle dolacak.')">🔄 Transfer Odası</a>
+        <a href="#" onclick="alert('Ayarlar Menüsü: Tema ve alarm ayarları yakında eklenecek.')">⚙️ Ayarlar</a>
+        <a href="#" onclick="alert('Burası sadece Şampiyon Galatasaray\'a özel! Takım değiştiremezsin 😉')">🔁 Takım Değiştirme</a>
+        <a href="#" onclick="alert('Favori Oyuncun: Mauro Icardi / Victor Osimhen seçildi!')">⭐️ Favori Oyuncu</a>
+        <a href="#" onclick="alert('Geçmiş Olsun: Sakatlık alanındaki oyuncularımızın durumları yakında listelenecek.')">❤️ Geçmiş Olsun</a>
+    </div>
+
+    <!-- Ana İçerik -->
+    <div class="container">
+
+        <!-- Yeni Sezon Alarm / Sayaç Bölümü -->
+        <div class="countdown-box">
+            <h2>Yeni Sezon Hazırlık Kampı Sayaç</h2>
+            <div class="timer" id="countdown">Yükleniyor...</div>
+        </div>
+
+        <!-- Güncel Haberler -->
+        <h2 class="section-title">Güncel Haberler</h2>
+        
+        <div class="news-card">
+            <span class="tag tag-news">Kamp Başladı</span>
+            <h3>Aslan Kemerburgaz'da Sahaya İndi!</h3>
+            <p>Galatasaray, yeni sezon hazırlıklarına Kemerburgaz Metin Oktay Tesisleri'nde gerçekleştirdiği ilk antrenmanla resmen başladı.</p>
+        </div>
+
+        <!-- Transfer Söylentileri ve İmzalar -->
+        <h2 class="section-title">Transfer Odası & Söylentiler</h2>
+
+        <div class="news-card">
+            <span class="tag tag-rumor">Söylenti</span>
+            <h3>Bruno Fernandes Gündemde!</h3>
+            <p>Orta sahaya dünya çapında bir yıldız katmak isteyen sarı-kırmızılı yönetim, Manchester United forması giyen Portekizli yıldız için şartları zorluyor.</p>
+        </div>
+
+        <div class="news-card signature">
+            <span class="tag tag-official">Resmi İmza</span>
+            <h3>Jhon Duran Aslan Oldu!</h3>
+            <p>Kolombiyalı golcü oyuncu satın alma opsiyonuyla kiralık olarak Galatasaray kadrosuna dahil edildi. Oyuncunun İstanbul'a gelmesi bekleniyor.</p>
+        </div>
+
+        <!-- Canlı Lig Sıralaması -->
+        <h2 class="section-title">Trendyol Süper Lig</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sıra</th>
+                    <th>Takım</th>
+                    <th>Puan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="gs-row">
+                    <td>1</td>
+                    <td>Galatasaray 🦁</td>
+                    <td>77</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Fenerbahçe</td>
+                    <td>72</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Beşiktaş</td>
+                    <td>65</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Trabzonspor</td>
+                    <td>60</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Galatasaray Tarihçesi -->
+        <h2 class="section-title">Şanlı Galatasaray Tarihi</h2>
+        <div class="history-box">
+            <p><strong>1905</strong> yılında Ali Sami Yen ve arkadaşları tarafından Mekteb-i Sultani'de kurulan Galatasaray, Türk futbolunun öncüsüdür. Türkiye'nin Avrupa kupası kazanan (UEFA Kupası ve Süper Kupa - 2000) ilk ve tek kulübü olan Aslan, müzesindeki sayısız kupayla Türkiye'nin en başarılı futbol takımı ünvanını gururla taşımaktadır.</p>
+        </div>
+
+    </div>
+
+    <!-- Menü ve Saat Fonksiyonları için JavaScript -->
+    <script>
+        // Yan menüyü açıp kapatan fonksiyon
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Sayfa dışına tıklandığında menüyü kapatmak için
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.menu-btn');
+            if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Yeni Sezon / Kamp için Geri Sayım Sayacı (Örnek Tarih)
+        const targetDate = new Date("Aug 11, 2026 20:00:00").getTime();
+
+        const timerInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = days + " Gün " + hours + "s " + minutes + "dk " + seconds + "s ";
+
+            if (difference < 0) {
+                clearInterval(timerInterval);
+                document.getElementById("countdown").innerHTML = "Aslan Sahada! Yeni Sezon Başladı!";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cimbom Hub - Ultra Sürüm</title>
+    <style>
+        :root {
+            --galatasaray-kirmizi: #A90432;
+            --galatasaray-sari: #FDB912;
+            --koyu-arka-plan: #121212;
+            --kart-bg: #1c1c1c;
+            --yazi-renk: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--koyu-arka-plan);
+            color: var(--yazi-renk);
+            overflow-x: hidden;
+        }
+
+        /* Üst Menü Paneli */
+        header {
+            background-color: var(--galatasaray-kirmizi);
+            border-bottom: 4px solid var(--galatasaray-sari);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-btn {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            margin-right: 20px;
+        }
+
+        .menu-btn span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--galatasaray-sari);
+            border-radius: 3px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--galatasaray-sari);
+            text-transform: uppercase;
+        }
+
+        /* Marş Butonu */
+        .audio-btn {
+            background-color: var(--galatasaray-sari);
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Açılır Yan Menü */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -270px;
+            width: 270px;
+            height: 100%;
+            background-color: var(--kart-bg);
+            border-right: 3px solid var(--galatasaray-sari);
+            transition: 0.3s all ease;
+            padding-top: 80px;
+            z-index: 99;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 25px;
+            color: var(--yazi-renk);
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--galatasaray-kirmizi);
+            color: var(--galatasaray-sari);
+        }
+
+        /* Ana Konteyner */
+        .container {
+            margin-top: 90px;
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Sayaç ve Skor Panelleri */
+        .grid-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-box { grid-template-columns: 1fr; }
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, var(--galatasaray-kirmizi), #60021b);
+            border: 2px solid var(--galatasaray-sari);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .info-card h2 {
+            color: var(--galatasaray-sari);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .timer, .score {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Haberler ve Başlıklar */
+        .section-title {
+            color: var(--galatasaray-sari);
+            border-left: 5px solid var(--galatasaray-kirmizi);
+            padding-left: 10px;
+            margin: 25px 0 15px 0;
+            font-size: 22px;
+        }
+
+        .news-card {
+            background-color: var(--kart-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--galatasaray-sari);
+        }
+
+        .news-card.signature { border-left: 4px solid #28a745; }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .tag-rumor { background-color: #ffc107; color: #000; }
+        .tag-official { background-color: #28a745; color: #fff; }
+        .tag-news { background-color: var(--galatasaray-kirmizi); color: #fff; }
+
+        /* Oyuncu Kadrosu */
+        .player-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .player-card {
+            background-color: var(--kart-bg);
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 4px solid var(--galatasaray-sari);
+        }
+
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: #333;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 2px solid var(--galatasaray-kirmizi);
+        }
+
+        /* Tablo */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--kart-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        th, td { padding: 12px 15px; text-align: left; }
+        th { background-color: var(--galatasaray-kirmizi); color: var(--galatasaray-sari); }
+        tr { border-bottom: 1px solid #2a2a2a; }
+        tr.gs-row { background-color: rgba(253, 185, 18, 0.15); font-weight: bold; }
+
+        .history-box {
+            background-color: var(--kart-bg);
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.6;
+            border-top: 3px solid var(--galatasaray-kirmizi);
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="mars" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <header>
+        <div class="header-left">
+            <div class="menu-btn" onclick="toggleSidebar()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="logo-text">Aslan Hub 🦁</div>
+        </div>
+        <button class="audio-btn" onclick="toggleMars()">🦁 Marşı Çal</button>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <a href="#" onclick="alert('Transfer Odası: Bruno Fernandes ve Jhon Duran operasyonları sürüyor!')">🔄 Transfer Odası</a>
+        <a href="#" onclick="alert('Ayarlar Menüsü yakında aktif olacak.')">⚙️ Ayarlar</a>
+        <a href="#" onclick="alert('Aslanın rengi bellidir, takım değiştirilemez!')">🔁 Takım Değiştirme</a>
+        <a href="#" onclick="alert('Favori Oyuncun: Mauro Icardi seçildi!')">⭐️ Favori Oyuncu</a>
+        <a href="#" onclick="alert('Geçmiş Olsun: Sakatlığı bulunan oyuncularımızın tedavileri sürüyor.')">❤️ Geçmiş Olsun</a>
+    </div>
+
+    <div class="container">
+
+        <div class="grid-box">
+            <div class="info-card">
+                <h2>Yeni Sezon Hazırlık Kampı</h2>
+                <div class="timer" id="countdown">Yükleniyor...</div>
+            </div>
+            <div class="info-card" style="background: linear-gradient(135deg, #222, #000);">
+                <h2>Son Maç Skoru</h2>
+                <div class="score" style="color: var(--galatasaray-sari);">Galatasaray 3 - 1 Fenerbahçe</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Yıldızlar Kadrosu</h2>
+        <div class="player-grid">
+            <div class="player-card">
+                <div class="player-avatar">👑</div>
+                <h3>Mauro Icardi</h3>
+                <p style="color: var(--galatasaray-sari); font-size: 14px; margin-top: 5px;">Santrafor (Forvet)</p>
+                <p style="font-size: 12px; color: #aaa;">Gol Makinesi</p>
+            </div>
+            <div class="player-card">
+                <div class="player-avatar">⚡</div>
+                <h3>Victor Osimhen</h3>
+                <p style="color: var(--galatasaray-sari); font-size: 14px; margin-top: 5px;">Santrafor (Forvet)</p>
+                <p style="font-size: 12px; color: #aaa;">Maskeli Duvar</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Güncel Haberler</h2>
+        <div class="news-card">
+            <span class="tag tag-news">Kamp Başladı</span>
+            <h3>Aslan Kemerburgaz'da Sahaya İndi!</h3>
+            <p>Galatasaray, yeni sezon hazırlıklarına Florya'dan taşındığı yeni evi Kemerburgaz Metin Oktay Tesisleri'nde başladı.</p>
+        </div>
+
+        <h2 class="section-title">Transfer Odası & Söylentiler</h2>
+        <div class="news-card">
+            <span class="tag tag-rumor">Söylenti</span>
+            <h3>Bruno Fernandes Gündemde!</h3>
+            <p>Orta sahaya dünya çapında bir lider katmak isteyen yönetim şartları sonuna kadar zorluyor.</p>
+        </div>
+        <div class="news-card signature">
+            <span class="tag tag-official">Resmi İmza</span>
+            <h3>Jhon Duran Aslan Oldu!</h3>
+            <p>Kolombiyalı golcü oyuncu satın alma opsiyonuyla kiralık olarak Galatasaray kadrosuna dahil edildi.</p>
+        </div>
+
+        <h2 class="section-title">Trendyol Süper Lig</h2>
+        <table>
+            <thead>
+                <tr><th>Sıra</th><th>Takım</th><th>Puan</th></tr>
+            </thead>
+            <tbody>
+                <tr class="gs-row"><td>1</td><td>Galatasaray 🦁</td><td>77</td></tr>
+                <tr><td>2</td><td>Fenerbahçe</td><td>72</td></tr>
+                <tr><td>3</td><td>Beşiktaş</td><td>65</td></tr>
+                <tr><td>4</td><td>Trabzonspor</td><td>60</td></tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-title">Şanlı Galatasaray Tarihi</h2>
+        <div class="history-box">
+            <p><strong>1905</strong> yılında Ali Sami Yen ve arkadaşları tarafından kurulan Galatasaray, Türkiye'nin Avrupa kupası kazanan (UEFA Kupası ve Süper Kupa - 2000) ilk ve tek kulübüdür.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Yan Menü Fonksiyonu
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Marş Çalar Fonksiyonu
+        function toggleMars() {
+            const mars = document.getElementById('mars');
+            const btn = document.querySelector('.audio-btn');
+            if (mars.paused) {
+                mars.play();
+                btn.innerHTML = "⏸️ Marşı Durdur";
+                btn.style.backgroundColor = "#A90432";
+                btn.style.color = "#fff";
+            } else {
+                mars.pause();
+                btn.innerHTML = "🦁 Marşı Çal";
+                btn.style.backgroundColor = "#FDB912";
+                btn.style.color = "#000";
+            }
+        }
+
+        // Tıklama ile menü kapatma
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.menu-btn');
+            if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Geri Sayım Sayacı
+        const targetDate = new Date("Aug 11, 2026 20:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = days + "G " + hours + "s " + minutes + "d " + seconds + "s";
+        }, 1000);
+    </script>
+</body>
+</html>
